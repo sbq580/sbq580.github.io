@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio &mdash; Engineer, Explorer &amp; Curious Mind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #0e0d0b; --paper: #f5f0e8; --warm: #e8dcc8;
+      --accent: #c8401a; --accent2: #2a6b4f; --muted: #7a7060;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--paper); color: var(--ink); font-family: 'DM Mono', monospace; overflow-x: hidden; cursor: none; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 900; opacity: 0.5;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    }
+
+    /* CURSOR */
+    #cursor { width:12px; height:12px; background:var(--accent); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:multiply; }
+    #cursor-ring { width:34px; height:34px; border:1.5px solid var(--accent); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:0.55; transition:left .1s,top .1s; }
+
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; justify-content:space-between; align-items:center; padding:1.4rem 4rem; }
+    .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:.1em; color:var(--ink); text-decoration:none; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { font-size:.7rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color .2s; }
+    .nav-links a:hover { color:var(--accent); }
+
+    /* HERO */
+    .hero { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; align-items:center; padding:8rem 4rem 4rem; position:relative; overflow:hidden; }
+    .hero-bg { position:absolute; bottom:-2rem; left:-1rem; font-family:'Bebas Neue',sans-serif; font-size:clamp(8rem,18vw,20rem); color:transparent; -webkit-text-stroke:1px rgba(0,0,0,.06); line-height:1; pointer-events:none; user-select:none; white-space:nowrap; }
+    .hero-left { position:relative; z-index:2; }
+    .hero-tag { display:inline-block; font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); padding:.35rem .8rem; margin-bottom:2rem; opacity:0; animation:fadeUp .8s ease forwards .2s; }
+    .hero-name { font-family:'Fraunces',serif; font-size:clamp(3.5rem,7vw,6.5rem); font-weight:600; line-height:1; opacity:0; animation:fadeUp .8s ease forwards .4s; }
+    .hero-name em { font-style:italic; font-weight:300; color:var(--accent); }
+    .hero-sub { font-size:.85rem; color:var(--muted); letter-spacing:.04em; margin-top:1.5rem; max-width:380px; line-height:1.85; opacity:0; animation:fadeUp .8s ease forwards .6s; }
+    .hero-cta { display:inline-flex; align-items:center; gap:.8rem; margin-top:3rem; font-size:.75rem; letter-spacing:.15em; text-transform:uppercase; color:var(--ink); text-decoration:none; border-bottom:1.5px solid var(--ink); padding-bottom:.3rem; transition:color .2s,border-color .2s; opacity:0; animation:fadeUp .8s ease forwards .8s; }
+    .hero-cta:hover { color:var(--accent); border-color:var(--accent); }
+    .hero-cta .arr { display:inline-block; transition:transform .3s; }
+    .hero-cta:hover .arr { transform:translateX(6px); }
+    .hero-right { position:relative; z-index:2; display:flex; flex-direction:column; align-items:flex-end; gap:1.5rem; opacity:0; animation:fadeIn 1.2s ease forwards .6s; }
+    .stat-card { background:var(--ink); color:var(--paper); padding:1.5rem 2rem; width:220px; }
+    .stat-card.ac { background:var(--accent); width:180px; align-self:flex-end; }
+    .stat-card .num { font-family:'Bebas Neue',sans-serif; font-size:3.5rem; line-height:1; color:var(--accent); }
+    .stat-card.ac .num { color:var(--paper); }
+    .stat-card .lbl { font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; margin-top:.3rem; color:#aaa; }
+    .stat-card.ac .lbl { color:rgba(255,255,255,.6); }
+    .avail { display:flex; align-items:center; gap:.6rem; font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; color:var(--accent2); }
+    .dot { width:8px; height:8px; background:var(--accent2); border-radius:50%; animation:pulse 2s infinite; }
+
+    /* MARQUEE */
+    .mq-wrap { overflow:hidden; background:var(--ink); padding:.9rem 0; }
+    .mq-track { display:flex; width:max-content; animation:marquee 30s linear infinite; }
+    .mq-item { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:.1em; color:var(--paper); opacity:.55; padding:0 2.2rem; white-space:nowrap; }
+    .mq-item.hi { color:var(--accent); opacity:1; font-size:.9rem; }
+
+    /* SECTIONS */
+    section { padding:7rem 4rem; }
+    .sec-label { font-size:.65rem; letter-spacing:.25em; text-transform:uppercase; color:var(--accent); margin-bottom:3.5rem; display:flex; align-items:center; gap:1rem; }
+    .sec-label::after { content:''; flex:1; max-width:60px; height:1px; background:var(--accent); }
+
+    /* ABOUT */
+    .about { background:var(--warm); }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start; }
+    .about-head { font-family:'DM Serif Display',serif; font-size:clamp(2rem,4vw,3.4rem); line-height:1.2; font-style:italic; }
+    .about-head strong { font-style:normal; color:var(--accent); }
+    .about-p { font-size:.82rem; line-height:2; color:var(--muted); margin-top:1.8rem; }
+    .about-right { display:flex; flex-direction:column; gap:.9rem; }
+    .interest { display:flex; align-items:flex-start; gap:1.4rem; padding:1.2rem 1.4rem; border:1px solid rgba(0,0,0,.08); background:var(--paper); transition:transform .3s,box-shadow .3s; }
+    .interest:hover { transform:translateX(8px); box-shadow:-4px 4px 0 var(--accent); }
+    .i-icon { font-size:1.5rem; flex-shrink:0; width:1.8rem; text-align:center; }
+    .i-name { font-family:'Fraunces',serif; font-size:1rem; font-weight:600; }
+    .i-desc { font-size:.71rem; color:var(--muted); margin-top:.2rem; line-height:1.6; }
+
+    /* SKILLS */
+    .skills-wrap { padding:7rem 0; background:var(--paper); }
+    .skills-intro { padding:0 4rem; }
+    .skills-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--ink); margin-top:1.5rem; }
+    .sk { background:var(--paper); padding:2.5rem 2rem; transition:background .3s; }
+    .sk:hover { background:var(--ink); }
+    .sk-name { font-family:'Fraunces',serif; font-size:1.4rem; font-weight:600; margin-bottom:.35rem; transition:color .3s; }
+    .sk-lv { font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:1.2rem; transition:color .3s; }
+    .sk-bar { height:2px; background:rgba(0,0,0,.1); transition:background .3s; }
+    .sk-fill { height:100%; background:var(--accent); transition:background .3s; }
+    .sk-desc { font-size:.72rem; color:var(--muted); margin-top:1rem; line-height:1.7; transition:color .3s; }
+    .sk:hover .sk-name, .sk:hover .sk-desc { color:var(--paper); }
+    .sk:hover .sk-lv { color:var(--accent); }
+    .sk:hover .sk-bar { background:rgba(255,255,255,.12); }
+    .sk:hover .sk-fill { background:var(--accent); }
+
+    /* PROJECTS */
+    .projects { background:var(--ink); color:var(--paper); }
+    .projects .sec-label { color:var(--accent); }
+    .proj-list { display:flex; flex-direction:column; }
+    .proj-row { display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:2rem; padding:2rem 0; border-bottom:1px solid rgba(255,255,255,.07); transition:padding-left .3s; cursor:default; }
+    .proj-row:first-child { border-top:1px solid rgba(255,255,255,.07); }
+    .proj-row:hover { padding-left:1.5rem; }
+    .proj-row:hover .pn { color:var(--accent); }
+    .pn { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:rgba(255,255,255,.15); transition:color .3s; }
+    .pt { font-family:'Fraunces',serif; font-size:1.6rem; font-weight:600; }
+    .pm { font-size:.7rem; color:rgba(255,255,255,.4); margin-top:.25rem; letter-spacing:.07em; }
+    .ptags { display:flex; gap:.5rem; flex-wrap:wrap; justify-content:flex-end; }
+    .ptag { font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; padding:.3rem .7rem; border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.5); }
+
+    /* TRAVEL */
+    .travel { background:var(--warm); }
+    .travel-head { font-family:'Fraunces',serif; font-size:clamp(2.5rem,5vw,4rem); font-style:italic; font-weight:300; max-width:560px; line-height:1.2; margin-bottom:3rem; }
+    .photo-grid { display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:200px 200px; gap:1rem; }
+    .ph-item { overflow:hidden; position:relative; }
+    .ph-item:first-child { grid-column:span 2; grid-row:span 2; }
+    .ph-item:nth-child(4) { grid-column:span 2; }
+    .ph-bg { width:100%; height:100%; position:relative; overflow:hidden; transition:transform .5s; }
+    .ph-item:hover .ph-bg { transform:scale(1.05); }
+    .ph-overlay { position:absolute; inset:0; background:var(--ink); opacity:0; transition:opacity .3s; display:flex; align-items:center; justify-content:center; color:#fff; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; }
+    .ph-item:hover .ph-overlay { opacity:.55; }
+    .c1 { background:linear-gradient(135deg,#1a3a2a,#3a6a4a); }
+    .c2 { background:linear-gradient(135deg,#1a2a4a,#2a4a6a); }
+    .c3 { background:linear-gradient(135deg,#4a2a1a,#8a4a2a); }
+    .c4 { background:linear-gradient(135deg,#3a1a4a,#5a2a6a); }
+    .c5 { background:linear-gradient(135deg,#1a3a3a,#2a5a5a); }
+    .ph-art { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:.35; }
+    .ph-art svg { width:58%; height:58%; }
+
+    /* CONTACT */
+    .contact { background:var(--paper); display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+    .big-txt { font-family:'Bebas Neue',sans-serif; font-size:clamp(4rem,9vw,8rem); line-height:.9; letter-spacing:.02em; }
+    .big-txt span { color:var(--accent); }
+    .c-links { display:flex; flex-direction:column; gap:1.5rem; margin-top:3rem; }
+    .c-link { display:flex; align-items:center; gap:1.2rem; text-decoration:none; color:var(--ink); font-size:.8rem; letter-spacing:.04em; transition:color .2s; }
+    .c-link:hover { color:var(--accent); }
+    .c-icon { width:40px; height:40px; border:1.5px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:bold; transition:background .3s,color .3s,border-color .3s; flex-shrink:0; }
+    .c-link:hover .c-icon { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .c-facts { display:flex; flex-direction:column; gap:.8rem; }
+    .c-fact { padding:1.2rem 1.4rem; border-left:3px solid var(--warm); transition:border-color .3s; }
+    .c-fact:hover { border-color:var(--accent); }
+    .c-fact-lbl { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); }
+    .c-fact-val { font-family:'Fraunces',serif; font-size:1.1rem; margin-top:.25rem; }
+
+    /* FOOTER */
+    footer { background:var(--ink); color:rgba(255,255,255,.3); padding:2rem 4rem; display:flex; justify-content:space-between; align-items:center; font-size:.65rem; letter-spacing:.12em; }
+    footer span { color:var(--accent); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.75)} }
+
+    /* SCROLL REVEAL */
+    .rv { opacity:0; transform:translateY(36px); transition:opacity .8s ease,transform .8s ease; }
+    .rv.on { opacity:1; transform:translateY(0); }
+    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s} .d5{transition-delay:.5s}
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Dev/</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#travel">Travel</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">LIFE</div>
+  <div class="hero-left">
+    <div class="hero-tag">Engineer &middot; Explorer &middot; Jack of All Trades</div>
+    <h1 class="hero-name">Code by day,<br/><em>curious</em><br/>always.</h1>
+    <p class="hero-sub">Software engineer by profession, physicist at heart. I build UIs for a living, track world markets for sport, and chase horizons on two wheels or a one-way ticket.</p>
+    <a href="#work" class="hero-cta">See my work <span class="arr">&#8594;</span></a>
+  </div>
+  <div class="hero-right">
+    <div class="stat-card">
+      <div class="num">3</div>
+      <div class="lbl">Countries explored &mdash; India, Vietnam, Thailand</div>
+    </div>
+    <div class="stat-card ac">
+      <div class="num">&#8734;</div>
+      <div class="lbl">Curiosity &mdash; no limits</div>
+    </div>
+    <div class="avail"><div class="dot"></div>Available for new projects</div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq-wrap">
+  <div class="mq-track">
+    <span class="mq-item">React</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">TypeScript</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">JavaScript</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Physics &amp; Science</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">World Markets</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">India &middot; Vietnam &middot; Thailand</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Biking</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Guitar &middot; Rock</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Photography</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Cooking</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">PS5 Gaming</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Finance &amp; Economy</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">React</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">TypeScript</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">JavaScript</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Physics &amp; Science</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">World Markets</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">India &middot; Vietnam &middot; Thailand</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Biking</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Guitar &middot; Rock</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Photography</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Cooking</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">PS5 Gaming</span><span class="mq-item hi">&#10022;</span>
+    <span class="mq-item">Finance &amp; Economy</span><span class="mq-item hi">&#10022;</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="sec-label">001 &mdash; About Me</div>
+  <div class="about-grid">
+    <div>
+      <h2 class="about-head rv">A programmer<br/>who lives for<br/><strong>the full picture.</strong></h2>
+      <p class="about-p rv d1">I write React and TypeScript for a living &mdash; and I&rsquo;m good at it &mdash; but I&rsquo;d never call myself <em>just</em> a programmer. My real passions live elsewhere: in the equations behind the universe, in the global economy&rsquo;s moving parts, in the smell of street food in Hanoi, and in the wind on a long bike ride.</p>
+      <p class="about-p rv d2">I read voraciously &mdash; physics, science, novels &mdash; and manage my own investment portfolio with the same discipline I bring to code. Jack of all trades? Proudly. Master of living fully? Always working on it.</p>
+    </div>
+    <div class="about-right">
+      <div class="interest rv d1">
+        <div class="i-icon">&#9992;</div>
+        <div><div class="i-name">Travelling</div><div class="i-desc">India, Vietnam, Thailand &mdash; and counting. Every country rewires how I think.</div></div>
+      </div>
+      <div class="interest rv d2">
+        <div class="i-icon">&#8987;</div>
+        <div><div class="i-name">Physics &amp; Science</div><div class="i-desc">From quantum mechanics to cosmology &mdash; science books are my favourite rabbit holes.</div></div>
+      </div>
+      <div class="interest rv d3">
+        <div class="i-icon">&#128200;</div>
+        <div><div class="i-name">Finance &amp; Markets</div><div class="i-desc">World markets, macro trends, equity research &mdash; I run my own portfolio with conviction.</div></div>
+      </div>
+      <div class="interest rv d3">
+        <div class="i-icon">&#128739;</div>
+        <div><div class="i-name">Biking</div><div class="i-desc">Nothing clears the head like an open road. Two wheels, no meetings, full throttle.</div></div>
+      </div>
+      <div class="interest rv d4">
+        <div class="i-icon">&#127928;</div>
+        <div><div class="i-name">Rock Guitar</div><div class="i-desc">Loud riffs, late nights. A big rock fan &mdash; playing and listening alike.</div></div>
+      </div>
+      <div class="interest rv d5">
+        <div class="i-icon">&#127859;</div>
+        <div><div class="i-name">Cooking, Gaming &amp; More</div><div class="i-desc">Experimenting in the kitchen, on the PS5, and behind a camera. Always something on.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<div class="skills-wrap" id="skills">
+  <div class="skills-intro">
+    <div class="sec-label rv">002 &mdash; Expertise</div>
+    <p class="rv d1" style="font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,3rem);max-width:680px;line-height:1.3;margin-bottom:3rem;font-style:italic;">Things I do well &mdash; in code, in markets, and in the world.</p>
+  </div>
+  <div class="skills-grid">
+    <div class="sk rv"><div class="sk-name">React</div><div class="sk-lv">Expert &middot; Primary Stack</div><div class="sk-bar"><div class="sk-fill" style="width:96%"></div></div><div class="sk-desc">Components, hooks, context, performance optimisation. React is my professional home.</div></div>
+    <div class="sk rv d1"><div class="sk-name">TypeScript</div><div class="sk-lv">Expert &middot; Daily Driver</div><div class="sk-bar"><div class="sk-fill" style="width:92%"></div></div><div class="sk-desc">Strong typing, generics, utility types. Writing TS that self-documents.</div></div>
+    <div class="sk rv d2"><div class="sk-name">JavaScript</div><div class="sk-lv">Expert &middot; Foundation</div><div class="sk-bar"><div class="sk-fill" style="width:95%"></div></div><div class="sk-desc">Deep knowledge of the runtime, async patterns, and the DOM.</div></div>
+    <div class="sk rv d1"><div class="sk-name">Physics</div><div class="sk-lv">Passionate Autodidact</div><div class="sk-bar"><div class="sk-fill" style="width:80%"></div></div><div class="sk-desc">Quantum mechanics, relativity, cosmology &mdash; read widely and deeply. Science is my true intellectual love.</div></div>
+    <div class="sk rv d2"><div class="sk-name">Finance</div><div class="sk-lv">Self-taught &middot; Active Investor</div><div class="sk-bar"><div class="sk-fill" style="width:78%"></div></div><div class="sk-desc">World markets, macroeconomics, equity research. Managing my own portfolio with conviction.</div></div>
+    <div class="sk rv d3"><div class="sk-name">Photography</div><div class="sk-lv">Enthusiast &middot; Eye for Detail</div><div class="sk-bar"><div class="sk-fill" style="width:68%"></div></div><div class="sk-desc">Composition, light, storytelling &mdash; a lens that sharpens both design thinking and wanderlust.</div></div>
+  </div>
+</div>
+
+<!-- WORK -->
+<section class="projects" id="work">
+  <div class="sec-label rv">003 &mdash; Selected Work</div>
+  <div class="proj-list">
+    <div class="proj-row rv">
+      <div class="pn">01</div>
+      <div><div class="pt">Design System Framework</div><div class="pm">Scalable component library &middot; Enterprise-grade</div></div>
+      <div class="ptags"><span class="ptag">React</span><span class="ptag">TypeScript</span><span class="ptag">Storybook</span></div>
+    </div>
+    <div class="proj-row rv d1">
+      <div class="pn">02</div>
+      <div><div class="pt">Real-time Dashboard UI</div><div class="pm">Data visualisation &middot; Live updates &middot; Responsive</div></div>
+      <div class="ptags"><span class="ptag">React</span><span class="ptag">WebSockets</span><span class="ptag">D3.js</span></div>
+    </div>
+    <div class="proj-row rv d2">
+      <div class="pn">03</div>
+      <div><div class="pt">E-Commerce Platform</div><div class="pm">Full frontend &middot; Performance optimised &middot; 99 Lighthouse</div></div>
+      <div class="ptags"><span class="ptag">Next.js</span><span class="ptag">TypeScript</span><span class="ptag">CSS Modules</span></div>
+    </div>
+    <div class="proj-row rv d3">
+      <div class="pn">04</div>
+      <div><div class="pt">Mobile-First Web App</div><div class="pm">PWA &middot; Offline-ready &middot; Touch optimised</div></div>
+      <div class="ptags"><span class="ptag">React</span><span class="ptag">PWA</span><span class="ptag">JavaScript</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAVEL / PHOTOGRAPHY -->
+<section class="travel" id="travel">
+  <div class="sec-label rv">004 &mdash; Through the Lens</div>
+  <p class="travel-head rv">India. Vietnam.<br/>Thailand. And<br/>beyond.</p>
+  <div class="photo-grid">
+    <div class="ph-item">
+      <div class="ph-bg c1">
+        <div class="ph-art"><svg viewBox="0 0 200 200" fill="none"><path d="M0 140 Q50 80 100 120 Q150 160 200 100" stroke="white" stroke-width="1.5"/><path d="M0 160 Q60 100 110 140 Q160 180 200 120" stroke="white" stroke-width="1" opacity=".5"/><circle cx="60" cy="50" r="25" stroke="white" stroke-width="1.5"/></svg></div>
+      </div>
+      <div class="ph-overlay">India &#127470;&#127475;</div>
+    </div>
+    <div class="ph-item">
+      <div class="ph-bg c2">
+        <div class="ph-art"><svg viewBox="0 0 200 200" fill="none"><rect x="60" y="40" width="80" height="120" stroke="white" stroke-width="1.5"/><rect x="75" y="55" width="20" height="25" stroke="white" stroke-width="1" opacity=".6"/><rect x="105" y="55" width="20" height="25" stroke="white" stroke-width="1" opacity=".6"/><rect x="75" y="95" width="50" height="60" stroke="white" stroke-width="1" opacity=".6"/></svg></div>
+      </div>
+      <div class="ph-overlay">Vietnam &#127483;&#127475;</div>
+    </div>
+    <div class="ph-item">
+      <div class="ph-bg c3">
+        <div class="ph-art"><svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="70" r="35" stroke="white" stroke-width="1.5"/><path d="M30 160 Q100 110 170 160" stroke="white" stroke-width="1.5"/></svg></div>
+      </div>
+      <div class="ph-overlay">Thailand &#127481;&#127469;</div>
+    </div>
+    <div class="ph-item">
+      <div class="ph-bg c4">
+        <div class="ph-art"><svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="130" r="40" stroke="white" stroke-width="1.5"/><circle cx="100" cy="130" r="15" stroke="white" stroke-width="1" opacity=".5"/><line x1="100" y1="90" x2="100" y2="50" stroke="white" stroke-width="2"/><line x1="80" y1="60" x2="120" y2="60" stroke="white" stroke-width="1.5" opacity=".7"/></svg></div>
+      </div>
+      <div class="ph-overlay">On the Bike &#128663;</div>
+    </div>
+    <div class="ph-item">
+      <div class="ph-bg c5">
+        <div class="ph-art"><svg viewBox="0 0 200 200" fill="none"><path d="M0 130 Q30 80 60 100 Q90 120 120 70 Q150 20 200 50" stroke="white" stroke-width="1.5"/><path d="M0 150 Q40 100 80 120 Q120 140 160 90 Q180 70 200 80" stroke="white" stroke-width="1" opacity=".4"/><circle cx="155" cy="38" r="14" fill="white" opacity=".15"/></svg></div>
+      </div>
+      <div class="ph-overlay">Next Destination &#9992;</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-left">
+    <div class="sec-label rv">005 &mdash; Let&rsquo;s Connect</div>
+    <div class="big-txt rv">LET&rsquo;S<br/><span>BUILD</span><br/>THINGS.</div>
+    <div class="c-links rv d1">
+      <a href="mailto:hello@yoursite.com" class="c-link"><div class="c-icon">@</div>hello@yoursite.com</a>
+      <a href="#" class="c-link"><div class="c-icon">in</div>linkedin.com/in/yourprofile</a>
+      <a href="#" class="c-link"><div class="c-icon">gh</div>github.com/yourusername</a>
+    </div>
+  </div>
+  <div class="c-facts rv d2">
+    <div class="c-fact"><div class="c-fact-lbl">Based in</div><div class="c-fact-val">India &#127470;&#127475;</div></div>
+    <div class="c-fact"><div class="c-fact-lbl">Last travelled to</div><div class="c-fact-val">Vietnam &amp; Thailand &#127758;</div></div>
+    <div class="c-fact"><div class="c-fact-lbl">Currently reading</div><div class="c-fact-val">Something on physics or economics</div></div>
+    <div class="c-fact"><div class="c-fact-lbl">Watching in markets</div><div class="c-fact-val">Fed policy, EM equities, macro trends &#128200;</div></div>
+    <div class="c-fact"><div class="c-fact-lbl">Last ride</div><div class="c-fact-val">Somewhere with no traffic &amp; good corners &#128663;</div></div>
+    <div class="c-fact"><div class="c-fact-lbl">Currently listening to</div><div class="c-fact-val">Led Zeppelin, AC/DC, Pink Floyd &#127928;</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div><span>&copy; 2026</span> &nbsp;&middot;&nbsp; Designed &amp; built with love &amp; caffeine &nbsp;&middot;&nbsp; All rights reserved</div>
+  <div>React <span>&middot;</span> TypeScript <span>&middot;</span> Vanilla CSS</div>
+</footer>
+
+<script>
+  // Cursor
+  var cur = document.getElementById('cursor');
+  var ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', function(e) {
+    cur.style.left  = e.clientX + 'px';
+    cur.style.top   = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top  = e.clientY + 'px';
+  });
+
+  // Scroll reveal
+  var items = document.querySelectorAll('.rv');
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) e.target.classList.add('on');
+    });
+  }, { threshold: 0.1 });
+  items.forEach(function(el) { obs.observe(el); });
+</script>
+</body>
+</html>
